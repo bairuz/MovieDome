@@ -150,8 +150,34 @@
 <footer class="footer">
   <div class="footer-content">
 
-     <center> <a href='https://www.counters-free.net/'></a> <script type='text/javascript' src='https://www.freevisitorcounters.com/auth.php?id=4e2b2705d9a0ba068dda0b7d61ea11c934132ded'></script>
-<script type="text/javascript" src="https://www.freevisitorcounters.com/en/home/counter/1464675/t/0"></script></center>
+     <!-- REPLACE WITH LIGHTWEIGHT ALTERNATIVE -->
+<div id="page-views" style="text-align:center;font-size:0.85rem;color:#666;margin:10px 0">
+  <span id="view-count">Loading...</span> views today
+</div>
+<script>
+  // Simple view counter using localStorage (no external requests)
+  document.addEventListener('DOMContentLoaded', () => {
+    try {
+      const today = new Date().toDateString();
+      const lastCountDate = localStorage.getItem('viewCountDate') || '';
+      let count = parseInt(localStorage.getItem('dailyViews') || '0');
+      
+      if (lastCountDate !== today) {
+        count = 1;
+        localStorage.setItem('viewCountDate', today);
+      } else {
+        count += 1;
+      }
+      
+      localStorage.setItem('dailyViews', count.toString());
+      document.getElementById('view-count').textContent = count.toLocaleString();
+    } catch(e) {
+      document.getElementById('view-count').style.display = 'none';
+    }
+  });
+</script>
+
+    
     <p>&copy; 2025 My Website. All rights reserved.</p>
     <div class="footer-links">
                 <a href="/disclaimer.html">Disclaimer</a>
@@ -168,6 +194,7 @@
   
 
 </body>
+
 
 
 
