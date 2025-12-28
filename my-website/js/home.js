@@ -65,7 +65,7 @@ const API_KEY = 'dfd8d0c0e19038ba3059fc9043e64c68';
       } else if (server === "player.videasy.net") {
         embedURL = `https://player.videasy.net/${type}/${currentItem.id}`;
       }else if (server === "111movies.com") {
-        embedURL = `https://player.111movies.com/${type}/${currentItem.id}`;
+        embedURL = `https://111movies.com/${type}/${currentItem.id}`;
       }
 
       document.getElementById('modal-video').src = embedURL;
@@ -124,6 +124,7 @@ const API_KEY = 'dfd8d0c0e19038ba3059fc9043e64c68';
 
 
     init();
+
 
 
 
