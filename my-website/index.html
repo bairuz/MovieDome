@@ -138,61 +138,60 @@
   <footer class="footer" role="contentinfo">
     <div class="footer-content">
       
-<!-- Counter-->
-<div class="page-counter-container">
-  <div class="counter-header">
-    <i class="fas fa-eye"></i>
-    <h3>Site Statistics</h3>
-  </div>
-  <div class="counter-grid">
-    <div class="counter-card today">
-      <div class="card-icon">
-        <i class="fas fa-sun"></i>
+<div class="landscape-counter-container">
+  <div class="counter-wrapper">
+    <div class="counter-header">
+      <i class="fas fa-film"></i>
+      <h2>MovieDome Analytics</h2>
+    </div>
+    
+    <div class="counter-stats">
+      <div class="stat-item today">
+        <div class="stat-icon"><i class="fas fa-sun"></i></div>
+        <div class="stat-content">
+          <div class="stat-label">Today</div>
+          <div class="stat-value" id="today-count">0</div>
+        </div>
       </div>
-      <div class="card-content">
-        <h4>Today</h4>
-        <p class="count" id="today-count">0</p>
+      
+      <div class="stat-item yesterday">
+        <div class="stat-icon"><i class="fas fa-moon-stars"></i></div>
+        <div class="stat-content">
+          <div class="stat-label">Yesterday</div>
+          <div class="stat-value" id="yesterday-count">0</div>
+        </div>
+      </div>
+      
+      <div class="stat-item last-month">
+        <div class="stat-icon"><i class="fas fa-calendar-week"></i></div>
+        <div class="stat-content">
+          <div class="stat-label">Last Month</div>
+          <div class="stat-value" id="last-month-count">0</div>
+        </div>
+      </div>
+      
+      <div class="stat-item total">
+        <div class="stat-icon"><i class="fas fa-users"></i></div>
+        <div class="stat-content">
+          <div class="stat-label">Total Views</div>
+          <div class="stat-value" id="total-count">0</div>
+        </div>
       </div>
     </div>
     
-    <div class="counter-card yesterday">
-      <div class="card-icon">
-        <i class="fas fa-moon"></i>
+    <div class="counter-footer">
+      <div class="footer-left">
+        <i class="fas fa-shield-alt"></i> Privacy-focused analytics
       </div>
-      <div class="card-content">
-        <h4>Yesterday</h4>
-        <p class="count" id="yesterday-count">0</p>
-      </div>
-    </div>
-    
-    <div class="counter-card last-month">
-      <div class="card-icon">
-        <i class="fas fa-calendar-alt"></i>
-      </div>
-      <div class="card-content">
-        <h4>Last Month</h4>
-        <p class="count" id="last-month-count">0</p>
+      <div class="footer-right">
+        Updated <span id="last-update">just now</span>
       </div>
     </div>
-    
-    <div class="counter-card total">
-      <div class="card-icon">
-        <i class="fas fa-chart-line"></i>
-      </div>
-      <div class="card-content">
-        <h4>Total</h4>
-        <p class="count" id="total-count">0</p>
-      </div>
-    </div>
-  </div>
-  <div class="counter-footer">
-    <small>Updated in real-time • Privacy-focused</small>
   </div>
 </div>
-      
 
 <script src="counter.js"></script>
-
+      
       
       <p>&copy; 2025 MovieDome. All rights reserved.</p>
       
@@ -213,6 +212,7 @@
   <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "a7e438254dc14e71b920153ad1709919"}'></script>
 </body>
 </html>
+
 
 
 
