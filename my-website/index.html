@@ -30,13 +30,20 @@
 </head>
 
 <body>
-  <div class="navbar">
-    <img src="logo.png" alt="logo.png" sizes = "800x8000" />
-    <div class="nav-links">
-      <a href="index.html">Home</a>
-      <input type="text" class="search-bar" placeholder="Search..." onfocus="openSearchModal()" />
-    </div>
-  </div>
+ <!-- Header -->
+    <header class="navbar">
+        <div class="logo-container">
+            <div class="logo-icon" aria-hidden="true">🎬</div>
+            <h1 class="logo-text">MovieDome</h1>
+        </div>
+        <div class="nav-links">
+            <a href="index.html" aria-current="page">Home</a>
+            <div class="search-wrapper">
+                <input type="text" class="search-bar" placeholder="Search movies or TV shows..."
+                    onfocus="openSearchModal()" aria-label="Search movies or TV shows">
+                <i class="fas fa-search search-icon" aria-hidden="true"></i>
+            </div>
+        </div>
 
   <div class="banner" id="banner">
     <h1 id="banner-title"></h1>
@@ -107,6 +114,7 @@
   
 
 </body>
+
 
 
 
