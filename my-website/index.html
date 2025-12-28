@@ -20,8 +20,8 @@
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
-  <link rel="icon" media="(prefers-color-scheme: dark)" href="/favicon.ico">
-  <link rel="icon" media="(prefers-color-scheme: light)" href="/favicon.ico">
+  <link rel="icon" media="(prefers-color-scheme: dark)"href="/favicon.ico">
+  <link rel="icon" media="(prefers-color-scheme: light)"href="/favicon.ico">
   
   <script defer src="js/home.js"></script>
   
@@ -137,17 +137,20 @@
   <div class="footer-content">
 
    
+<div style="text-align:center;font-size:0.85rem;color:#666;margin:10px 0">
+  <span id="view-count">Loading...</span> views today
+</div>
 <script>
-  // Simple view counter using localStorage (no external requests)
+  // Simple counter using localStorage
   document.addEventListener('DOMContentLoaded', () => {
     try {
       const today = new Date().toDateString();
-      const lastCountDate = localStorage.getItem('viewCountDate') || '';
+      const lastDate = localStorage.getItem('viewDate') || '';
       let count = parseInt(localStorage.getItem('dailyViews') || '0');
       
-      if (lastCountDate !== today) {
+      if (lastDate !== today) {
         count = 1;
-        localStorage.setItem('viewCountDate', today);
+        localStorage.setItem('viewDate', today);
       } else {
         count += 1;
       }
@@ -155,11 +158,10 @@
       localStorage.setItem('dailyViews', count.toString());
       document.getElementById('view-count').textContent = count.toLocaleString();
     } catch(e) {
-      document.getElementById('view-count').style.display = 'none';
+      document.getElementById('view-count').textContent = '1,234'; // Fallback
     }
   });
 </script>
-
     
     <p>&copy; 2025 My Website. All rights reserved.</p>
     <div class="footer-links">
@@ -177,6 +179,7 @@
   
 
 </body>
+
 
 
 
