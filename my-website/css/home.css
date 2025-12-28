@@ -286,3 +286,23 @@
 
 }
 
+ .logo-container {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                }
+
+                .logo-icon {
+                    font-size: 24px;
+                }
+
+                .logo-text {
+                    font-size: 22px;
+                    font-weight: 800;
+                    background: linear-gradient(90deg, #ff416c, #ff4b2b);
+                    -webkit-background-clip: text;
+                    background-clip: text;
+                    color: transparent;
+                }
+
+
