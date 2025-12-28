@@ -138,58 +138,43 @@
   <footer class="footer" role="contentinfo">
     <div class="footer-content">
       
-<div class="landscape-counter-container">
-  <div class="counter-wrapper">
-    <div class="counter-header">
-      <i class="fas fa-film"></i>
-      <h2>MovieDome Analytics</h2>
-    </div>
-    
-    <div class="counter-stats">
-      <div class="stat-item today">
-        <div class="stat-icon"><i class="fas fa-sun"></i></div>
-        <div class="stat-content">
-          <div class="stat-label">Today</div>
-          <div class="stat-value" id="today-count">0</div>
-        </div>
-      </div>
-      
-      <div class="stat-item yesterday">
-        <div class="stat-icon"><i class="fas fa-moon-stars"></i></div>
-        <div class="stat-content">
-          <div class="stat-label">Yesterday</div>
-          <div class="stat-value" id="yesterday-count">0</div>
-        </div>
-      </div>
-      
-      <div class="stat-item last-month">
-        <div class="stat-icon"><i class="fas fa-calendar-week"></i></div>
-        <div class="stat-content">
-          <div class="stat-label">Last Month</div>
-          <div class="stat-value" id="last-month-count">0</div>
-        </div>
-      </div>
-      
-      <div class="stat-item total">
-        <div class="stat-icon"><i class="fas fa-users"></i></div>
-        <div class="stat-content">
-          <div class="stat-label">Total Views</div>
-          <div class="stat-value" id="total-count">0</div>
-        </div>
+<div class="stats-counter">
+  <div class="counter-container">
+    <div class="stat-item today">
+      <div class="stat-icon">🎬</div>
+      <div class="stat-content">
+        <div class="stat-label">Today</div>
+        <div class="stat-value" id="today-count">0</div>
       </div>
     </div>
     
-    <div class="counter-footer">
-      <div class="footer-left">
-        <i class="fas fa-shield-alt"></i> Privacy-focused analytics
+    <div class="stat-item yesterday">
+      <div class="stat-icon">🌙</div>
+      <div class="stat-content">
+        <div class="stat-label">Yesterday</div>
+        <div class="stat-value" id="yesterday-count">0</div>
       </div>
-      <div class="footer-right">
-        Updated <span id="last-update">just now</span>
+    </div>
+    
+    <div class="stat-item last-month">
+      <div class="stat-icon">📅</div>
+      <div class="stat-content">
+        <div class="stat-label">Last Month</div>
+        <div class="stat-value" id="last-month-count">0</div>
+      </div>
+    </div>
+    
+    <div class="stat-item total">
+      <div class="stat-icon">🍿</div>
+      <div class="stat-content">
+        <div class="stat-label">Total</div>
+        <div class="stat-value" id="total-count">0</div>
       </div>
     </div>
   </div>
 </div>
 
+<link rel="stylesheet" href="counter.css">
 <script src="counter.js"></script>
       
       
@@ -212,6 +197,7 @@
   <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "a7e438254dc14e71b920153ad1709919"}'></script>
 </body>
 </html>
+
 
 
 
