@@ -1,103 +1,115 @@
-// Compact Visitor Counter
+```javascript
 document.addEventListener('DOMContentLoaded', function() {
-  // Check if counter elements exist before initializing
-  const counterElements = document.querySelectorAll('.compact-counter .stat-value');
-  if (counterElements.length === 0) return;
-  
+  // Elements
   const yesterdayElement = document.getElementById('yesterday-count');
   const onlineElement = document.getElementById('online-count');
   const monthElement = document.getElementById('month-count');
   const totalElement = document.getElementById('total-count');
   
-  // Initial values - in production these would come from your server
-  let stats = {
-    yesterday: 1247,
-    online: 86,
-    month: 28453,
-    total: 427691
-  };
+  // Only initialize if counter elements exist
+  if (!yesterdayElement || !onlineElement || !monthElement || !totalElement) {
+    console.log('Counter elements not found');
+    return;
+  }
   
-  // Format numbers with commas
+  // Function to format numbers with commas
   function formatNumber(num) {
     return num.toLocaleString();
   }
   
-  // Update counter display
-  function updateCounters() {
-    if (yesterdayElement) yesterdayElement.textContent = formatNumber(stats.yesterday);
-    if (onlineElement) onlineElement.textContent = formatNumber(stats.online);
-    if (monthElement) monthElement.textContent = formatNumber(stats.month);
-    if (totalElement) totalElement.textContent = formatNumber(stats.total);
-  }
-  
-  // Animate counters on page load
-  function animateCounters() {
-    if (!yesterdayElement || !onlineElement || !monthElement || !totalElement) return;
-    
-    // Animate yesterday count
-    animateValue(yesterdayElement, 0, stats.yesterday, 800);
-    
-    // Animate online count
-    animateValue(onlineElement, 0, stats.online, 600);
-    
-    // Animate month count
-    animateValue(monthElement, 0, stats.month, 1000);
-    
-    // Animate total count
-    animateValue(totalElement, 0, stats.total, 1200);
-  }
-  
-  // Generic counter animation function
-  function animateValue(element, start, end, duration) {
-    let startTimestamp = null;
-    const step = (timestamp) => {
-      if (!startTimestamp) startTimestamp = timestamp;
-      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-      const value = Math.floor(progress * (end - start) + start);
-      element.textContent = formatNumber(value);
+  // Function to get counts from CountAPI
+  async function getCounts() {
+    try {
+      // Get current date info
+      const today = new Date();
+      const currentDay = today.getDate();
+      const currentMonth = today.getMonth() + 1;
+      const currentYear = today.getFullYear();
       
-      if (progress < 1) {
-        window.requestAnimationFrame(step);
-      }
-    };
-    window.requestAnimationFrame(step);
-  }
-  
-  // Simulate real-time updates
-  function simulateRealTimeUpdates() {
-    // Only update if elements exist
-    if (!onlineElement || !monthElement || !totalElement) return;
-    
-    // Update online users
-    setInterval(() => {
-      if (!onlineElement) return;
-      const change = Math.floor(Math.random() * 5) - 2;
-      stats.online = Math.max(1, stats.online + change);
-      onlineElement.textContent = formatNumber(stats.online);
-    }, 8000);
-    
-    // Update visitor counts
-    setInterval(() => {
-      if (!monthElement || !totalElement) return;
+      // Get total visits
+      const totalResponse = await fetch('https://api.countapi.xyz/hit/moviedome-85i/total');
+      const totalData = await totalResponse.json();
       
-      const newVisitors = Math.floor(Math.random() * 3) + 1;
-      stats.total += newVisitors;
-      stats.month += newVisitors;
+      // Get monthly visits (reset on 1st of each month)
+      const monthKey = `month_${currentYear}_${currentMonth}`;
+      const monthResponse = await fetch(`https://api.countapi.xyz/hit/moviedome-85i/${monthKey}`);
+      const monthData = await monthResponse.json();
       
-      if (Math.random() < 0.1 && yesterdayElement) {
-        stats.yesterday += newVisitors;
-        yesterdayElement.textContent = formatNumber(stats.yesterday);
+      // Get daily visits for yesterday (this is simplified - a proper implementation would need server-side logic)
+      const yesterdayKey = `day_${currentYear}_${currentMonth}_${currentDay - 1}`;
+      const yesterdayResponse = await fetch(`https://api.countapi.xyz/get/moviedome-85i/${yesterdayKey}`);
+      let yesterdayData = { value: 0 };
+      
+      if (yesterdayResponse.ok) {
+        yesterdayData = await yesterdayResponse.json();
       }
       
-      monthElement.textContent = formatNumber(stats.month);
-      totalElement.textContent = formatNumber(stats.total);
-    }, 15000);
+      // For online users, we'll use a simplified approach (this is an estimate)
+      // In a real implementation, you'd need WebSockets or a more sophisticated backend
+      const onlineUsers = Math.max(1, Math.floor(totalData.value * 0.001));
+      
+      // Update the UI
+      yesterdayElement.textContent = formatNumber(yesterdayData.value || 0);
+      onlineElement.textContent = formatNumber(onlineUsers);
+      monthElement.textContent = formatNumber(monthData.value);
+      totalElement.textContent = formatNumber(totalData.value);
+      
+      // Set up periodic refresh (every 30 seconds)
+      setTimeout(getCounts, 30000);
+      
+    } catch (error) {
+      console.error('Error fetching visitor counts:', error);
+      
+      // Fallback to static numbers if API fails
+      yesterdayElement.textContent = formatNumber(1247);
+      onlineElement.textContent = formatNumber(86);
+      monthElement.textContent = formatNumber(28453);
+      totalElement.textContent = formatNumber(427691);
+      
+      // Retry after 1 minute
+      setTimeout(getCounts, 60000);
+    }
   }
   
-  // Initialize counter if elements exist
-  if (yesterdayElement && onlineElement && monthElement && totalElement) {
-    updateCounters();
-    setTimeout(animateCounters, 300);
-    setTimeout(simulateRealTimeUpdates, 2000);
+  // Initialize the counter
+  getCounts();
+  
+  // Track current visit
+  async function trackVisit() {
+    try {
+      // Get today's date components
+      const today = new Date();
+      const currentDay = today.getDate();
+      const currentMonth = today.getMonth() + 1;
+      const currentYear = today.getFullYear();
+      
+      // Track daily visits
+      const dayKey = `day_${currentYear}_${currentMonth}_${currentDay}`;
+      await fetch(`https://api.countapi.xyz/hit/moviedome-85i/${dayKey}`);
+      
+    } catch (error) {
+      console.error('Error tracking visit:', error);
+    }
   }
+  
+  // Track this visit
+  trackVisit();
 });
+```
+
+## Setup Instructions
+
+1. **Copy the HTML snippet** into your footer (inside the `.footer-content` div)
+
+2. **Create `counter.css`** in your CSS folder and paste the CSS code
+
+3. **Create `counter.js`** in your JS folder and paste the JavaScript code
+
+4. **Add these lines to your HTML:**
+   ```html
+   <!-- In the <head> section -->
+   <link rel="stylesheet" href="css/counter.css">
+   
+   <!-- Before the closing </body> tag -->
+   <script src="js/counter.js" defer></script>
+   ```
