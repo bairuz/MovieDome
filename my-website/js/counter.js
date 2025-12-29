@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const BASE_URL = 'https://api.counterapi.dev/v2/moviedome/first-counter-2297';
   
   // 🔑 IMPORTANT: REPLACE WITH YOUR ACTUAL KEY FROM https://counterapi.dev
-  const API_KEY = 'ut_uIEThE7vfhwyikv05pgptmGzpEcamyCFLHv3v6kS'; 
+  const API_KEY = 'ut_dOEBUlVBn2RVxe1KnEML2UcL2QL2zW1uL056DCkO'; 
   
   // Function to format numbers with commas
   function formatNumber(num) {
@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function() {
   async function initializeCounter() {
     try {
       // 🔥 FIXED: Proper API key validation
-      if (API_KEY === 'ut_uIEThE7vfhwyikv05pgptmGzpEcamyCFLHv3v6kS' || !API_KEY.trim()) {
+      if (API_KEY === 'ut_dOEBUlVBn2RVxe1KnEML2UcL2QL2zW1uL056DCkO' || !API_KEY.trim()) {
         throw new Error('Invalid API key configuration. Get your key from https://counterapi.dev');
       }
       
