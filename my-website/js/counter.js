@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   
   // 🔥 CRITICAL FIX: Proper BASE_URL without spaces
-  const BASE_URL = 'https://api.counterapi.dev/v2/jan-kadiris-team-2297/first-counter-2297';
+  const BASE_URL = 'https://api.counterapi.dev/v2/moviedome/first-counter-2297';
   
   // 🔑 IMPORTANT: REPLACE WITH YOUR ACTUAL KEY FROM https://counterapi.dev
   const API_KEY = 'ut_uIEThE7vfhwyikv05pgptmGzpEcamyCFLHv3v6kS'; 
