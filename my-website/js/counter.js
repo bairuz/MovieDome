@@ -1,142 +1,112 @@
-class SimpleCounter {
-  constructor() {
-    this.storageKey = 'site_counter_data';
-    this.init();
-    this.scheduleMidnightReset();
+```javascript
+document.addEventListener('DOMContentLoaded', () => {
+  // DOM elements
+  const yesterdayElement = document.getElementById('yesterday-count');
+  const onlineElement = document.getElementById('online-count');
+  const monthElement = document.getElementById('month-count');
+  const totalElement = document.getElementById('total-count');
+  
+  // Initial values
+  let stats = {
+    yesterday: 1247,
+    online: 86,
+    month: 28453,
+    total: 427691
+  };
+  
+  // Format numbers with commas
+  function formatNumber(num) {
+    return num.toLocaleString();
   }
-
-  init() {
-    const data = this.loadCounts();
-    this.displayCounts(data);
-    this.recordVisit();
+  
+  // Update counter display
+  function updateCounters() {
+    yesterdayElement.textContent = formatNumber(stats.yesterday);
+    onlineElement.textContent = formatNumber(stats.online);
+    monthElement.textContent = formatNumber(stats.month);
+    totalElement.textContent = formatNumber(stats.total);
   }
-
-  loadCounts() {
-    try {
-      const saved = localStorage.getItem(this.storageKey);
-      if (saved) return JSON.parse(saved);
-    } catch (e) {
-      console.error('Error loading counter data:', e);
-    }
+  
+  // Animate counters on page load
+  function animateCounters() {
+    // Animate yesterday count
+    animateValue(yesterdayElement, 0, stats.yesterday, 1000);
     
-    return this.getDefaultData();
-  }
-
-  getDefaultData() {
-    const today = this.getTodayDate();
-    const yesterday = this.getYesterdayDate();
-    const lastMonth = this.getLastMonth();
+    // Animate online count
+    animateValue(onlineElement, 0, stats.online, 800);
     
-    return {
-      today: { count: 0, date: today },
-      yesterday: { count: 0, date: yesterday },
-      lastMonth: { count: 0, month: lastMonth },
-      total: 0
+    // Animate month count
+    animateValue(monthElement, 0, stats.month, 1200);
+    
+    // Animate total count
+    animateValue(totalElement, 0, stats.total, 1500);
+  }
+  
+  // Generic counter animation function
+  function animateValue(element, start, end, duration) {
+    let startTimestamp = null;
+    const step = (timestamp) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+      const value = Math.floor(progress * (end - start) + start);
+      element.textContent = formatNumber(value);
+      
+      if (progress < 1) {
+        window.requestAnimationFrame(step);
+      }
     };
+    window.requestAnimationFrame(step);
   }
-
-  saveCounts(data) {
-    try {
-      localStorage.setItem(this.storageKey, JSON.stringify(data));
-    } catch (e) {
-      console.error('Error saving counter data:', e);
-    }
-  }
-
-  getTodayDate() {
-    const now = new Date();
-    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-  }
-
-  getYesterdayDate() {
-    const now = new Date();
-    now.setDate(now.getDate() - 1);
-    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-  }
-
-  getLastMonth() {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = now.getMonth(); // 0-11
-    return `${year}-${String(month + 1).padStart(2, '0')}`;
-  }
-
-  recordVisit() {
-    const data = this.loadCounts();
-    const today = this.getTodayDate();
-    const currentMonth = this.getLastMonth();
+  
+  // Simulate real-time updates (optional)
+  function simulateRealTimeUpdates() {
+    // Update online users every few seconds
+    setInterval(() => {
+      const change = Math.floor(Math.random() * 5) - 2; // -2 to +2
+      stats.online = Math.max(1, stats.online + change);
+      onlineElement.textContent = formatNumber(stats.online);
+    }, 5000);
     
-    // Reset if new day
-    if (data.today.date !== today) {
-      data.yesterday = { count: data.today.count, date: data.today.date };
-      data.today = { count: 1, date: today };
-    } else {
-      data.today.count += 1;
-    }
-    
-    // Reset if new month
-    if (data.lastMonth.month !== currentMonth) {
-      data.lastMonth = { count: 1, month: currentMonth };
-    } else {
-      data.lastMonth.count += 1;
-    }
-    
-    // Update total
-    data.total += 1;
-    
-    this.saveCounts(data);
-    this.displayCounts(data);
-  }
-
-  displayCounts(data) {
-    this.animateCounter('today-count', data.today.count);
-    this.animateCounter('yesterday-count', data.yesterday.count);
-    this.animateCounter('last-month-count', data.lastMonth.count);
-    this.animateCounter('total-count', data.total);
-  }
-
-  animateCounter(elementId, targetValue) {
-    const element = document.getElementById(elementId);
-    if (!element) return;
-    
-    const currentValue = parseInt(element.textContent.replace(/,/g, '')) || 0;
-    if (currentValue === targetValue) return;
-    
-    let start = currentValue;
-    const increment = targetValue > currentValue ? 1 : -1;
-    const step = Math.max(1, Math.abs(targetValue - currentValue) / 20);
-    const duration = 300;
-    const steps = Math.abs(targetValue - currentValue) / step;
-    const timePerStep = duration / steps;
-    
-    const updateCounter = () => {
-      start += increment * step;
-      if ((increment > 0 && start >= targetValue) || (increment < 0 && start <= targetValue)) {
-        element.textContent = targetValue.toLocaleString();
-        return;
+    // Simulate new visitors
+    setInterval(() => {
+      const newVisitors = Math.floor(Math.random() * 3) + 1;
+      stats.total += newVisitors;
+      stats.month += newVisitors;
+      
+      // 10% chance to increase yesterday count
+      if (Math.random() < 0.1) {
+        stats.yesterday += newVisitors;
+        yesterdayElement.textContent = formatNumber(stats.yesterday);
       }
       
-      element.textContent = Math.round(start).toLocaleString();
-      setTimeout(updateCounter, timePerStep);
-    };
-    
-    updateCounter();
+      monthElement.textContent = formatNumber(stats.month);
+      totalElement.textContent = formatNumber(stats.total);
+    }, 10000);
   }
-
-  scheduleMidnightReset() {
-    const now = new Date();
-    const midnight = new Date();
-    midnight.setHours(24, 0, 0, 0);
-    const timeUntilMidnight = midnight.getTime() - now.getTime();
-    
-    setTimeout(() => {
-      this.recordVisit();
-      this.scheduleMidnightReset();
-    }, timeUntilMidnight);
-  }
-}
-
-// Initialize when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-  new SimpleCounter();
+  
+  // Initialize
+  updateCounters();
+  animateCounters();
+  simulateRealTimeUpdates();
+  
+  /* 
+  In a real implementation, you would fetch data from your server:
+  
+  fetch('/api/visitor-stats')
+    .then(response => response.json())
+    .then(data => {
+      stats = {
+        yesterday: data.yesterday,
+        online: data.online,
+        month: data.month,
+        total: data.total
+      };
+      animateCounters();
+    })
+    .catch(error => {
+      console.error('Error fetching visitor stats:', error);
+      animateCounters();
+    });
+  */
 });
+```
