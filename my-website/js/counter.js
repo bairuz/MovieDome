@@ -12,104 +12,128 @@ document.addEventListener('DOMContentLoaded', function() {
     return;
   }
   
+  // CounterAPI.dev endpoint
+  const apiEndpoint = 'https://api.counterapi.dev/v2/jan-kadiris-team-2297/first-counter-2297';
+  
   // Function to format numbers with commas
   function formatNumber(num) {
     return num.toLocaleString();
   }
   
-  // Function to get counts from CountAPI
-  async function getCounts() {
+  // Function to animate value changes
+  function animateValue(element, start, end, duration) {
+    let startTimestamp = null;
+    const step = (timestamp) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+      const value = Math.floor(progress * (end - start) + start);
+      element.textContent = formatNumber(value);
+      
+      if (progress < 1) {
+        window.requestAnimationFrame(step);
+      }
+    };
+    window.requestAnimationFrame(step);
+  }
+  
+  // Initialize with loading state
+  yesterdayElement.textContent = '...';
+  onlineElement.textContent = '...';
+  monthElement.textContent = '...';
+  totalElement.textContent = '...';
+  
+  // CounterAPI.dev implementation
+  async function initializeCounter() {
     try {
-      // Get current date info
-      const today = new Date();
-      const currentDay = today.getDate();
-      const currentMonth = today.getMonth() + 1;
-      const currentYear = today.getFullYear();
+      // Get current counter data
+      const response = await fetch(apiEndpoint);
+      const data = await response.json();
       
-      // Get total visits
-      const totalResponse = await fetch('https://api.countapi.xyz/hit/moviedome-85i/total');
-      const totalData = await totalResponse.json();
+      // Initialize counters
+      let totalVisits = data.value || 0;
+      let monthlyVisits = data.monthly || 0;
       
-      // Get monthly visits (reset on 1st of each month)
-      const monthKey = `month_${currentYear}_${currentMonth}`;
-      const monthResponse = await fetch(`https://api.countapi.xyz/hit/moviedome-85i/${monthKey}`);
-      const monthData = await monthResponse.json();
+      // Track this visit
+      const trackResponse = await fetch(apiEndpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          action: 'increment',
+          metadata: {
+            timestamp: new Date().toISOString(),
+            url: window.location.href
+          }
+        })
+      });
       
-      // Get daily visits for yesterday (this is simplified - a proper implementation would need server-side logic)
-      const yesterdayKey = `day_${currentYear}_${currentMonth}_${currentDay - 1}`;
-      const yesterdayResponse = await fetch(`https://api.countapi.xyz/get/moviedome-85i/${yesterdayKey}`);
-      let yesterdayData = { value: 0 };
+      const trackData = await trackResponse.json();
+      totalVisits = trackData.value || totalVisits + 1;
       
-      if (yesterdayResponse.ok) {
-        yesterdayData = await yesterdayResponse.json();
+      // Get monthly data (if available)
+      if (trackData.monthly !== undefined) {
+        monthlyVisits = trackData.monthly;
       }
       
-      // For online users, we'll use a simplified approach (this is an estimate)
-      // In a real implementation, you'd need WebSockets or a more sophisticated backend
-      const onlineUsers = Math.max(1, Math.floor(totalData.value * 0.001));
+      // Calculate yesterday's visits (estimate based on total)
+      const yesterdayVisits = Math.max(0, totalVisits - 10); // Simple estimation
       
-      // Update the UI
-      yesterdayElement.textContent = formatNumber(yesterdayData.value || 0);
-      onlineElement.textContent = formatNumber(onlineUsers);
-      monthElement.textContent = formatNumber(monthData.value);
-      totalElement.textContent = formatNumber(totalData.value);
+      // Estimate online users (based on recent activity)
+      const onlineUsers = Math.max(1, Math.min(50, Math.floor(totalVisits * 0.01 + Math.random() * 5)));
       
-      // Set up periodic refresh (every 30 seconds)
-      setTimeout(getCounts, 30000);
+      // Update counters with animations
+      animateValue(yesterdayElement, 0, yesterdayVisits, 800);
+      animateValue(onlineElement, 0, onlineUsers, 600);
+      animateValue(monthElement, 0, monthlyVisits, 1000);
+      animateValue(totalElement, 0, totalVisits, 1200);
+      
+      // Update online users more frequently
+      setInterval(async () => {
+        const onlineResponse = await fetch(apiEndpoint);
+        const onlineData = await onlineResponse.json();
+        const currentVisits = onlineData.value || totalVisits;
+        const updatedOnlineUsers = Math.max(1, Math.min(50, Math.floor(currentVisits * 0.01 + Math.random() * 10)));
+        animateValue(onlineElement, parseInt(onlineElement.textContent.replace(/,/g, '')), updatedOnlineUsers, 400);
+      }, 15000);
+      
+      // Update other counters every minute
+      setInterval(async () => {
+        try {
+          const updateResponse = await fetch(apiEndpoint);
+          const updateData = await updateResponse.json();
+          
+          const currentTotal = updateData.value || totalVisits;
+          const currentMonthly = updateData.monthly || monthlyVisits;
+          
+          animateValue(monthElement, parseInt(monthElement.textContent.replace(/,/g, '')), currentMonthly, 600);
+          animateValue(totalElement, parseInt(totalElement.textContent.replace(/,/g, '')), currentTotal, 800);
+          
+          // Update yesterday's estimate
+          const yesterdayEstimate = Math.max(0, currentTotal - 15);
+          if (Math.abs(yesterdayEstimate - parseInt(yesterdayElement.textContent.replace(/,/g, ''))) > 5) {
+            animateValue(yesterdayElement, parseInt(yesterdayElement.textContent.replace(/,/g, '')), yesterdayEstimate, 600);
+          }
+        } catch (error) {
+          console.error('Error updating counters:', error);
+        }
+      }, 60000);
       
     } catch (error) {
-      console.error('Error fetching visitor counts:', error);
+      console.error('Error initializing counter:', error);
       
-      // Fallback to static numbers if API fails
-      yesterdayElement.textContent = formatNumber(1247);
-      onlineElement.textContent = formatNumber(86);
-      monthElement.textContent = formatNumber(28453);
-      totalElement.textContent = formatNumber(427691);
+      // Fallback static values if API fails
+      yesterdayElement.textContent = formatNumber(150);
+      onlineElement.textContent = formatNumber(12);
+      monthElement.textContent = formatNumber(3800);
+      totalElement.textContent = formatNumber(25400);
       
-      // Retry after 1 minute
-      setTimeout(getCounts, 60000);
+      // Try again after 30 seconds
+      setTimeout(initializeCounter, 30000);
     }
   }
   
   // Initialize the counter
-  getCounts();
-  
-  // Track current visit
-  async function trackVisit() {
-    try {
-      // Get today's date components
-      const today = new Date();
-      const currentDay = today.getDate();
-      const currentMonth = today.getMonth() + 1;
-      const currentYear = today.getFullYear();
-      
-      // Track daily visits
-      const dayKey = `day_${currentYear}_${currentMonth}_${currentDay}`;
-      await fetch(`https://api.countapi.xyz/hit/moviedome-85i/${dayKey}`);
-      
-    } catch (error) {
-      console.error('Error tracking visit:', error);
-    }
-  }
-  
-  // Track this visit
-  trackVisit();
+  initializeCounter();
 });
 ```
-
-## Setup Instructions
-
-1. **Copy the HTML snippet** into your footer (inside the `.footer-content` div)
-
-2. **Create `counter.css`** in your CSS folder and paste the CSS code
-
-3. **Create `counter.js`** in your JS folder and paste the JavaScript code
-
-4. **Add these lines to your HTML:**
-   ```html
-   <!-- In the <head> section -->
-   <link rel="stylesheet" href="css/counter.css">
-   
-   <!-- Before the closing </body> tag -->
-   <script src="js/counter.js" defer></script>
-   ```
