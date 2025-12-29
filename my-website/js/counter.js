@@ -1,4 +1,3 @@
-```javascript
 // Compact Visitor Counter
 document.addEventListener('DOMContentLoaded', function() {
   // Check if counter elements exist before initializing
@@ -102,4 +101,3 @@ document.addEventListener('DOMContentLoaded', function() {
     setTimeout(simulateRealTimeUpdates, 2000);
   }
 });
-```
