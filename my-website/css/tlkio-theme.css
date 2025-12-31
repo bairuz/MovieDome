@@ -1,0 +1,123 @@
+:root {
+  --bg-primary: #0f0f0f;
+  --bg-secondary: #121212;
+  --bg-tertiary: #1a1a1a;
+  --fg-primary: #ffffff;
+  --fg-secondary: #e0e0e0;
+  --fg-muted: #888888;
+  --accent: #e50914;
+  --border: #222222;
+  --surface: rgba(255,255,255,0.05);
+}
+
+body {
+  background-color: var(--bg-primary) !important;
+  color: var(--fg-primary) !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+}
+
+/* Header */
+.header-bar {
+  background-color: var(--bg-tertiary) !important;
+  border-bottom: 1px solid var(--border) !important;
+}
+.header-channel {
+  color: var(--fg-muted) !important;
+}
+.header-icon {
+  background: var(--surface) !important;
+}
+.header-icon:hover {
+  background: rgba(255,255,255,0.1) !important;
+}
+
+/* Chat messages */
+.chat {
+  background-color: var(--bg-primary) !important;
+}
+.post {
+  background-color: var(--bg-secondary) !important;
+  border-color: var(--border) !important;
+}
+.post.me {
+  background-color: var(--bg-tertiary) !important;
+}
+.post-name {
+  color: var(--fg-muted) !important;
+}
+.time, .post-time-dot {
+  color: var(--fg-muted) !important;
+  background: var(--border) !important;
+}
+.post-message.unread .post-time-dot {
+  background: var(--accent) !important;
+}
+
+/* Input */
+.message-input {
+  background: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--fg-primary) !important;
+}
+.message-input:focus {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.3) !important;
+}
+.message-input::placeholder {
+  color: var(--fg-muted) !important;
+}
+
+/* Buttons */
+.button {
+  background: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--fg-secondary) !important;
+}
+.button:hover {
+  background: rgba(255,255,255,0.1) !important;
+}
+.button--danger {
+  background: rgba(229, 9, 20, 0.2) !important;
+  border-color: var(--accent) !important;
+  color: var(--fg-primary) !important;
+}
+.button--danger:hover {
+  background: rgba(229, 9, 20, 0.3) !important;
+}
+
+/* Participants & Menu */
+.aside, .participants, .popup-content {
+  background: var(--bg-secondary) !important;
+}
+.menu-item {
+  background: var(--surface) !important;
+  border-color: var(--border) !important;
+}
+.menu-item.isOn {
+  background: var(--bg-tertiary) !important;
+  border-color: var(--border) !important;
+}
+
+/* Code & Quotes */
+pre, code {
+  background: #1a1a1a !important;
+  border: 1px solid var(--border) !important;
+  color: #ff6b6b !important;
+}
+blockquote {
+  color: #4ec9b0 !important;
+  border-left: 4px solid var(--accent) !important;
+  background: rgba(229, 9, 20, 0.05) !important;
+  padding-left: 12px !important;
+  border-radius: 0 4px 4px 0 !important;
+}
+
+/* General */
+.join, .tooltip, .popup-box {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border) !important;
+  color: var(--fg-secondary) !important;
+}
+hr {
+  border-color: var(--border) !important;
+}
