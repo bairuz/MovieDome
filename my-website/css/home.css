@@ -129,12 +129,14 @@ body {
   font-weight: 700;
 }
 
-/* Scrollable Lists */
+/* FIXED: Unified grid layout for all lists */
 .list {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: 16px;
-  overflow-x: auto;
+  margin-top: 12px;
   padding: 10px 0;
+  width: 100%;
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
@@ -144,17 +146,48 @@ body {
 }
 
 .list img {
-  width: 150px;
+  width: 100%;
+  max-width: 150px;
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-  flex-shrink: 0;
+  aspect-ratio: 2/3;
+  object-fit: cover;
 }
 
 .list img:hover {
   transform: translateY(-6px) scale(1.02);
   box-shadow: 0 8px 20px rgba(255, 75, 43, 0.5);
+}
+
+/* Show More Button Styles */
+.show-more-btn {
+  grid-column: 1 / -1;
+  margin: 24px auto;
+  padding: 12px 32px;
+  background: linear-gradient(90deg, #ff416c, #ff4b2b);
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-weight: bold;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(255, 75, 43, 0.4);
+  transition: all 0.3s ease;
+  width: fit-content;
+  min-width: 220px;
+  text-align: center;
+}
+
+.show-more-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 75, 43, 0.6);
+  background: linear-gradient(90deg, #ff4b2b, #ff416c);
+}
+
+.show-more-btn:active {
+  transform: translateY(0);
 }
 
 /* Modals */
@@ -274,19 +307,21 @@ body {
 }
 
 .search-modal .results {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   gap: 20px;
   max-width: 800px;
   padding: 0 10px;
+  justify-content: center;
 }
 
 .search-modal img {
-  width: 120px;
+  width: 100%;
   border-radius: 8px;
   cursor: pointer;
   transition: transform 0.2s;
+  aspect-ratio: 2/3;
+  object-fit: cover;
 }
 
 .search-modal img:hover {
@@ -372,7 +407,13 @@ body {
   }
 
   .list img {
-    width: 120px;
+    max-width: 120px;
+  }
+
+  .show-more-btn {
+    min-width: 180px;
+    padding: 10px 24px;
+    font-size: 1rem;
   }
 
   .search-modal {
@@ -405,4 +446,15 @@ body {
     right: 20px;
     font-size: 24px;
   }
+  
+  .list {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  }
+  
+  .show-more-btn {
+    min-width: 160px;
+    padding: 8px 20px;
+    font-size: 0.95rem;
+  }
 }
+/* FIXED: Added missing closing brace for the last media query */
