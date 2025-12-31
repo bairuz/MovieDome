@@ -306,3 +306,439 @@ init();
 
 
 
+
+//New Features
+// Global variables for episode management
+let currentSeason = 1;
+let currentEpisode = 1;
+let seasonEpisodes = [];
+let nextEpisodeData = null;
+let countdownInterval = null;
+let showDetailsData = null; // Store full show details
+
+// Function to show all episodes popup
+async function showAllEpisodes(item) {
+  // Close any existing modals first
+  closeModal();
+  
+  // Store current item
+  currentItem = item;
+  
+  // Show loading state
+  document.getElementById('episodes-popup').style.display = 'flex';
+  document.getElementById('episodes-grid').innerHTML = '<div class="loading">Loading episodes...</div>';
+  
+  try {
+    // Get full show details with seasons
+    const showDetails = await fetchTVShowDetails(item.id);
+    showDetailsData = showDetails;
+    
+    // Set popup title
+    document.getElementById('popup-series-title').textContent = showDetails.name || showDetails.title;
+    
+    // Setup season selector
+    setupSeasonSelector(showDetails.seasons);
+    
+    // Load episodes for first season
+    if (showDetails.seasons.length > 0) {
+      const firstSeason = showDetails.seasons.find(s => s.season_number > 0) || showDetails.seasons[0];
+      if (firstSeason) {
+        currentSeason = firstSeason.season_number;
+        await loadSeasonEpisodes(currentSeason);
+      }
+    }
+  } catch (error) {
+    console.error('Error loading episodes:', error);
+    document.getElementById('episodes-grid').innerHTML = `
+      <p class="error-message">Failed to load episodes. Please try again later.</p>
+    `;
+  }
+}
+
+// Fetch full TV show details
+async function fetchTVShowDetails(showId) {
+  const res = await fetch(`${BASE_URL}/tv/${showId}?api_key=${API_KEY}&append_to_response=seasons`);
+  return await res.json();
+}
+
+// Setup season selector dropdown
+function setupSeasonSelector(seasons) {
+  const seasonSelect = document.getElementById('popup-season-select');
+  seasonSelect.innerHTML = '';
+  
+  // Filter and sort seasons (exclude season 0 - specials)
+  const validSeasons = seasons
+    .filter(season => season.season_number > 0)
+    .sort((a, b) => a.season_number - b.season_number);
+  
+  validSeasons.forEach(season => {
+    const option = document.createElement('option');
+    option.value = season.season_number;
+    option.textContent = `Season ${season.season_number} (${season.episode_count} Episodes)`;
+    seasonSelect.appendChild(option);
+  });
+  
+  // Add event listener
+  seasonSelect.addEventListener('change', async function() {
+    currentSeason = parseInt(this.value);
+    await loadSeasonEpisodes(currentSeason);
+  });
+}
+
+// Load episodes for a specific season
+async function loadSeasonEpisodes(seasonNumber) {
+  const episodesGrid = document.getElementById('episodes-grid');
+  episodesGrid.innerHTML = '<div class="loading">Loading episodes...</div>';
+  
+  try {
+    const res = await fetch(`${BASE_URL}/tv/${currentItem.id}/season/${seasonNumber}?api_key=${API_KEY}`);
+    const seasonData = await res.json();
+    seasonEpisodes = seasonData.episodes;
+    
+    displayEpisodes(seasonEpisodes);
+  } catch (error) {
+    console.error('Error loading season episodes:', error);
+    episodesGrid.innerHTML = `
+      <p class="error-message">Failed to load episodes for this season. Please try again.</p>
+    `;
+  }
+}
+
+// Display episodes in the popup grid
+function displayEpisodes(episodes) {
+  const episodesGrid = document.getElementById('episodes-grid');
+  episodesGrid.innerHTML = '';
+  
+  if (episodes.length === 0) {
+    episodesGrid.innerHTML = '<p class="no-episodes">No episodes available for this season.</p>';
+    return;
+  }
+  
+  episodes.forEach(episode => {
+    const episodeCard = document.createElement('div');
+    episodeCard.className = 'episode-card';
+    if (currentEpisode === episode.episode_number && currentSeason === seasonEpisodes[0]?.season_number) {
+      episodeCard.classList.add('current');
+    }
+    
+    // Format air date
+    let airDate = 'Not aired yet';
+    if (episode.air_date) {
+      const date = new Date(episode.air_date);
+      airDate = date.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'short', 
+        day: 'numeric' 
+      });
+    }
+    
+    episodeCard.innerHTML = `
+      <div class="episode-number">Episode ${episode.episode_number}</div>
+      <div class="episode-title">${episode.name}</div>
+      <div class="episode-airdate">${airDate}</div>
+    `;
+    
+    episodeCard.addEventListener('click', () => {
+      selectEpisode(episode);
+    });
+    
+    episodesGrid.appendChild(episodeCard);
+  });
+}
+
+// Select an episode from the popup
+function selectEpisode(episode) {
+  currentEpisode = episode.episode_number;
+  
+  // Close popup
+  closeEpisodesPopup();
+  
+  // Show details modal with selected episode
+  showDetailsWithEpisode(currentItem, currentSeason, currentEpisode);
+}
+
+// Show details modal with specific episode
+async function showDetailsWithEpisode(item, season, episodeNum) {
+  currentItem = item;
+  currentSeason = season;
+  currentEpisode = episodeNum;
+  
+  try {
+    // Get episode details
+    const episodeDetails = await fetchEpisodeDetails(item.id, season, episodeNum);
+    
+    // Update modal content
+    document.getElementById('modal-title').textContent = `${item.name} - S${season}E${episodeNum}: ${episodeDetails.name}`;
+    document.getElementById('modal-description').textContent = episodeDetails.overview || item.overview;
+    document.getElementById('modal-image').src = episodeDetails.still_path ? 
+      `${IMG_URL}${episodeDetails.still_path}` : 
+      `${IMG_URL}${item.poster_path}`;
+    document.getElementById('modal-rating').innerHTML = '★'.repeat(Math.round(item.vote_average / 2));
+    
+    // Show the "View All Episodes" button
+    document.getElementById('open-episodes-btn').style.display = 'block';
+    
+    // Load video player
+    changeServerForEpisode();
+    
+    // Check for next episode
+    checkNextEpisode();
+    
+    // Show modal
+    document.getElementById('modal').style.display = 'flex';
+  } catch (error) {
+    console.error('Error loading episode details:', error);
+    alert('Failed to load episode details. Please try again.');
+  }
+}
+
+// Fetch specific episode details
+async function fetchEpisodeDetails(showId, seasonNumber, episodeNumber) {
+  const res = await fetch(`${BASE_URL}/tv/${showId}/season/${seasonNumber}/episode/${episodeNumber}?api_key=${API_KEY}`);
+  return await res.json();
+}
+
+// Enhanced changeServer function that handles episodes
+function changeServerForEpisode() {
+  if (!currentItem) return;
+  
+  const server = document.getElementById('server').value;
+  let embedURL = "";
+  
+  if (currentItem.media_type === "tv") {
+    // TV Show with specific season/episode
+    if (server === "vidsrc.cc") {
+      embedURL = `https://vidsrc.cc/v2/embed/tv/${currentItem.id}/${currentSeason}-${currentEpisode}`;
+    } else if (server === "vidsrc.me") {
+      embedURL = `https://vidsrc.to/embed/tv?tmdb=${currentItem.id}&season=${currentSeason}&episode=${currentEpisode}`;
+    } else if (server === "player.videasy.net") {
+      embedURL = `https://player.videasy.net/embed/tv/${currentItem.id}/${currentSeason}/${currentEpisode}`;
+    }
+  } else {
+    // Movie
+    if (server === "vidsrc.cc") {
+      embedURL = `https://vidsrc.cc/v2/embed/movie/${currentItem.id}`;
+    } else if (server === "vidsrc.me") {
+      embedURL = `https://vidsrc.to/embed/movie?tmdb=${currentItem.id}`;
+    } else if (server === "player.videasy.net") {
+      embedURL = `https://player.videasy.net/embed/movie/${currentItem.id}`;
+    }
+  }
+  
+  document.getElementById('modal-video').src = embedURL;
+  
+  // Start checking for video end (simplified approach)
+  setupVideoEndDetection();
+}
+
+// Check if there's a next episode
+async function checkNextEpisode() {
+  if (!currentItem || currentItem.media_type !== "tv") return;
+  
+  let nextSeason = currentSeason;
+  let nextEpisodeNum = currentEpisode + 1;
+  
+  // Check if we need to go to next season
+  if (nextEpisodeNum > seasonEpisodes.length) {
+    nextSeason = currentSeason + 1;
+    nextEpisodeNum = 1;
+    
+    // Check if next season exists in our show details
+    const nextSeasonExists = showDetailsData.seasons.some(s => s.season_number === nextSeason);
+    if (!nextSeasonExists) {
+      nextEpisodeData = null;
+      return;
+    }
+    
+    // Get episodes for next season
+    try {
+      const res = await fetch(`${BASE_URL}/tv/${currentItem.id}/season/${nextSeason}?api_key=${API_KEY}`);
+      const seasonData = await res.json();
+      seasonEpisodes = seasonData.episodes;
+    } catch (error) {
+      console.error('Error loading next season:', error);
+      nextEpisodeData = null;
+      return;
+    }
+  }
+  
+  // Get next episode details
+  try {
+    const nextEpisode = await fetchEpisodeDetails(currentItem.id, nextSeason, nextEpisodeNum);
+    nextEpisodeData = {
+      season: nextSeason,
+      episode: nextEpisodeNum,
+      data: nextEpisode
+    };
+  } catch (error) {
+    console.error('Error loading next episode details:', error);
+    nextEpisodeData = null;
+  }
+}
+
+// Setup countdown for next episode
+function setupNextEpisodeOverlay() {
+  if (!nextEpisodeData) {
+    hideNextEpisodeOverlay();
+    return;
+  }
+  
+  const overlay = document.getElementById('next-episode-overlay');
+  const titleEl = document.getElementById('next-episode-title');
+  const descEl = document.getElementById('next-episode-desc');
+  const countdownEl = document.getElementById('countdown-timer');
+  
+  // Update content
+  titleEl.textContent = `${nextEpisodeData.data.name} (S${nextEpisodeData.season}E${nextEpisodeData.episode})`;
+  descEl.textContent = nextEpisodeData.data.overview 
+    ? nextEpisodeData.data.overview.substring(0, 120) + (nextEpisodeData.data.overview.length > 120 ? '...' : '') 
+    : 'No description available';
+  
+  // Reset countdown
+  let countdown = 10;
+  countdownEl.textContent = countdown;
+  
+  // Clear any existing interval
+  if (countdownInterval) clearInterval(countdownInterval);
+  
+  // Start new countdown
+  countdownInterval = setInterval(() => {
+    countdown--;
+    countdownEl.textContent = countdown;
+    
+    if (countdown <= 0) {
+      playNextEpisode();
+      clearInterval(countdownInterval);
+    }
+  }, 1000);
+  
+  // Show overlay with animation
+  overlay.style.display = 'block';
+  setTimeout(() => {
+    overlay.classList.add('visible');
+  }, 100);
+}
+
+// Hide the next episode overlay
+function hideNextEpisodeOverlay() {
+  const overlay = document.getElementById('next-episode-overlay');
+  overlay.classList.remove('visible');
+  
+  // Hide after animation completes
+  setTimeout(() => {
+    overlay.style.display = 'none';
+  }, 400);
+  
+  if (countdownInterval) {
+    clearInterval(countdownInterval);
+    countdownInterval = null;
+  }
+}
+
+// Play the next episode
+function playNextEpisode() {
+  if (!nextEpisodeData) return;
+  
+  hideNextEpisodeOverlay();
+  
+  // Update current episode
+  currentSeason = nextEpisodeData.season;
+  currentEpisode = nextEpisodeData.episode;
+  
+  // Update modal content
+  document.getElementById('modal-title').textContent = 
+    `${currentItem.name} - S${currentSeason}E${currentEpisode}: ${nextEpisodeData.data.name}`;
+  document.getElementById('modal-description').textContent = nextEpisodeData.data.overview || currentItem.overview;
+  
+  if (nextEpisodeData.data.still_path) {
+    document.getElementById('modal-image').src = `${IMG_URL}${nextEpisodeData.data.still_path}`;
+  }
+  
+  // Load the next episode
+  changeServerForEpisode();
+  
+  // Check for the episode after next
+  checkNextEpisode();
+}
+
+// Setup video end detection (simplified for iframe players)
+function setupVideoEndDetection() {
+  // Hide any existing overlay
+  hideNextEpisodeOverlay();
+  
+  // For iframe players, we can only estimate when the video might end
+  // This is a fallback approach - 25 minutes for TV episodes, 2 hours for movies
+  const duration = currentItem.media_type === "tv" ? 25 * 60 * 1000 : 2 * 60 * 60 * 1000;
+  
+  setTimeout(() => {
+    if (document.getElementById('modal').style.display === 'flex') {
+      setupNextEpisodeOverlay();
+    }
+  }, duration - 10000); // Show 10 seconds before estimated end
+}
+
+// Close episodes popup
+function closeEpisodesPopup() {
+  document.getElementById('episodes-popup').style.display = 'none';
+  showDetailsData = null;
+}
+
+// Initialize event listeners
+document.addEventListener('DOMContentLoaded', function() {
+  // Episodes popup listeners
+  document.getElementById('close-episodes-popup').addEventListener('click', closeEpisodesPopup);
+  document.getElementById('close-popup-btn').addEventListener('click', closeEpisodesPopup);
+  
+  // Next episode overlay listeners
+  document.getElementById('play-next-btn').addEventListener('click', playNextEpisode);
+  document.getElementById('cancel-next-btn').addEventListener('click', hideNextEpisodeOverlay);
+  
+  // Enhanced showDetails function for TV shows
+  const originalShowDetails = window.showDetails;
+  window.showDetails = function(item) {
+    if (item.media_type === "tv") {
+      showAllEpisodes(item);
+    } else {
+      originalShowDetails(item);
+      
+      // Hide the episodes button for movies
+      document.getElementById('open-episodes-btn').style.display = 'none';
+    }
+  };
+  
+  // Update changeServer to use the new function
+  document.getElementById('server').addEventListener('change', changeServerForEpisode);
+});
+
+// Add this to your existing init function
+// Update displayList function to handle TV shows differently
+function displayList(items, containerId) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  
+  items.slice(0, 12).forEach(item => {
+    const img = document.createElement('img');
+    img.src = `${IMG_URL}${item.poster_path}`;
+    img.alt = item.title || item.name;
+    
+    // For TV shows, show series badge
+    if (item.media_type === "tv") {
+      const badge = document.createElement('div');
+      badge.className = 'series-badge';
+      badge.textContent = 'SERIES';
+      img.parentElement?.appendChild(badge);
+    }
+    
+    img.onclick = () => showDetails(item);
+    container.appendChild(img);
+  });
+}
+
+
+
+
+
+
+
+
+
