@@ -316,10 +316,66 @@ let nextEpisodeData = null;
 let countdownInterval = null;
 let showDetailsData = null; // Store full show details
 
-// Function to show all episodes popup
-async function showAllEpisodes(item) {
-  // Close any existing modals first
-  closeModal();
+// Fetch specific episode details with proper error handling
+async function fetchEpisodeDetails(showId, seasonNumber, episodeNumber) {
+  try {
+    console.log(`Fetching episode details for show ${showId}, season ${seasonNumber}, episode ${episodeNumber}`);
+    
+    const res = await fetch(`${BASE_URL}/tv/${showId}/season/${seasonNumber}/episode/${episodeNumber}?api_key=${API_KEY}&language=en-US`);
+    
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => null);
+      console.error('TMDB API Error:', {
+        status: res.status,
+        statusText: res.statusText,
+        errorData: errorData
+      });
+      
+      throw new Error(`TMDB API Error ${res.status}: ${res.statusText}`);
+    }
+    
+    const data = await res.json();
+    console.log('Episode details loaded successfully:', data);
+    return data;
+  } catch (error) {
+    console.error('Failed to fetch episode details:', error);
+    
+    // Return fallback data instead of failing completely
+    return {
+      name: `Episode ${episodeNumber}`,
+      overview: 'Episode description not available.',
+      still_path: null,
+      air_date: null
+    };
+  }
+}
+
+// Fetch TV show details with proper error handling
+async function fetchTVShowDetails(showId) {
+  try {
+    console.log(`Fetching TV show details for ID: ${showId}`);
+    
+    const res = await fetch(`${BASE_URL}/tv/${showId}?api_key=${API_KEY}&append_to_response=seasons,credits&language=en-US`);
+    
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => null);
+      console.error('TMDB API Error:', {
+        status: res.status,
+        statusText: res.statusText,
+        errorData: errorData
+      });
+      
+      throw new Error(`TMDB API Error ${res.status}: ${res.statusText}`);
+    }
+    
+    const data = await res.json();
+    console.log('TV show details loaded successfully:', data);
+    return data;
+  } catch (error) {
+    console.error('Failed to fetch TV show details:', error);
+    throw error; // Re-throw for the caller to handle
+  }
+};
   
   // Store current item
   currentItem = item;
@@ -733,6 +789,7 @@ function displayList(items, containerId) {
     container.appendChild(img);
   });
 }
+
 
 
 
