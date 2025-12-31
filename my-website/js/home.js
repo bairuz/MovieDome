@@ -557,7 +557,7 @@ async function fetchEpisodeDetails(showId, seasonNumber, episodeNumber) {
   return await res.json();
 }
 
-/*
+
 // Enhanced changeServer function that handles episodes
 function changeServerForEpisode() {
   if (!currentItem) return;
@@ -590,62 +590,7 @@ function changeServerForEpisode() {
   // Start checking for video end (simplified approach)
   setupVideoEndDetection();
 }
-*/
 
-// Enhanced changeServer function that handles episodes and includes fallbacks
-function changeServerForEpisode() {
-  if (!currentItem) {
-    console.warn('No current item selected');
-    return;
-  }
-  
-  const server = document.getElementById('server').value;
-  const videoFrame = document.getElementById('modal-video');
-  let embedURL = "";
-  
-  try {
-    if (currentItem.media_type === "tv" && currentSeason && currentEpisode) {
-      // TV Show with specific season/episode
-      if (server === "vidsrc.cc") {
-        embedURL = `https://vidsrc.cc/v2/embed/tv/${currentItem.id}/${currentSeason}-${currentEpisode}`;
-      } else if (server === "vidsrc.me") {
-        embedURL = `https://vidsrc.to/embed/tv?tmdb=${currentItem.id}&season=${currentSeason}&episode=${currentEpisode}`;
-      } else if (server === "player.videasy.net") {
-        embedURL = `https://player.videasy.net/embed/tv/${currentItem.id}/${currentSeason}/${currentEpisode}`;
-      } else {
-        // Default fallback
-        embedURL = `https://vidsrc.cc/v2/embed/tv/${currentItem.id}/${currentSeason}-${currentEpisode}`;
-      }
-    } else {
-      // Movie
-      if (server === "vidsrc.cc") {
-        embedURL = `https://vidsrc.cc/v2/embed/movie/${currentItem.id}`;
-      } else if (server === "vidsrc.me") {
-        embedURL = `https://vidsrc.to/embed/movie?tmdb=${currentItem.id}`;
-      } else if (server === "player.videasy.net") {
-        embedURL = `https://player.videasy.net/embed/movie/${currentItem.id}`;
-      } else {
-        // Default fallback
-        embedURL = `https://vidsrc.cc/v2/embed/movie/${currentItem.id}`;
-      }
-    }
-    
-    console.log('Loading video from URL:', embedURL);
-    videoFrame.src = embedURL;
-    
-    // Add error handling for iframe loading
-    videoFrame.onerror = function() {
-      console.error('Failed to load video iframe');
-      alert('Failed to load video player. Please try a different server.');
-    };
-    
-    // Start checking for video end (simplified approach)
-    setupVideoEndDetection();
-  } catch (error) {
-    console.error('Error in changeServerForEpisode:', error);
-    alert('Error configuring video player. Please try again.');
-  }
-}
 
 // Check if there's a next episode
 async function checkNextEpisode() {
@@ -849,6 +794,7 @@ function displayList(items, containerId) {
     container.appendChild(img);
   });
 }
+
 
 
 
