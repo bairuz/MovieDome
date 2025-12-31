@@ -1,0 +1,16 @@
+{
+  "name": "MovieDome",
+  "short_name": "MovieDome",
+  "description": "Free movies and TV shows streaming",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f0f0f",
+  "theme_color": "#ff4b2b",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    }
+  ]
+}
