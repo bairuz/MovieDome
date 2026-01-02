@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="https://moviedome.site/">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://moviedome-85i.pages.dev/</loc>
-    <lastmod>2025-12-28</lastmod>
+    <loc>https://moviedome.site/</loc>
+    <lastmod>2024-01-15</lastmod>
     <priority>1.0</priority>
     <changefreq>daily</changefreq>
   </url>
   <url>
-    <loc>https://moviedome-85i.pages.dev/disclaimer.html</loc>
-    <lastmod>2025-12-28</lastmod>
+    <loc>https://moviedome.site/disclaimer.html</loc>
+    <lastmod>2024-01-15</lastmod>
     <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
   </url>
   <url>
-    <loc>https://moviedome-85i.pages.dev/about.html</loc>
-    <lastmod>2025-12-28</lastmod>
+    <loc>https://moviedome.site/about.html</loc>
+    <lastmod>2024-01-15</lastmod>
     <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
   </url>
   <url>
-    <loc>https://moviedome-85i.pages.dev/contact.html</loc>
-    <lastmod>2025-12-28</lastmod>
+    <loc>https://moviedome.site/contact.html</loc>
+    <lastmod>2024-01-15</lastmod>
     <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
   </url>
 </urlset>
-
