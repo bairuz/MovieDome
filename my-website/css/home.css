@@ -465,97 +465,94 @@ body {
 
 
 /*Test*/
-// ADD THIS TO A NEW FILE: js/mood-match.js
-document.addEventListener('DOMContentLoaded', () => {
-  const moodBtns = document.querySelectorAll('.mood-btn');
-  const resultsDiv = document.getElementById('quiz-results');
+/* ===== MOOD MATCH - MINIMAL WORKING VERSION ===== */
+.mood-options {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)) !important;
+  gap: 16px !important;
+  padding: 0 !important;
+  margin: 20px 0 !important;
+  width: 100% !important;
+}
 
-  // Movie recommendations by mood
-  const recommendations = {
-    chill: [
-      { title: "Before Sunrise", year: 1995, genre: "Romance", rating: "97%" },
-      { title: "The Secret Life of Walter Mitty", year: 2013, genre: "Adventure", rating: "86%" },
-      { title: "My Neighbor Totoro", year: 1988, genre: "Animation", rating: "92%" }
-    ],
-    thrill: [
-      { title: "Mad Max: Fury Road", year: 2015, genre: "Action", rating: "97%" },
-      { title: "Top Gun: Maverick", year: 2022, genre: "Action", rating: "96%" },
-      { title: "Everything Everywhere All at Once", year: 2022, genre: "Sci-Fi", rating: "94%" }
-    ],
-    deep: [
-      { title: "Arrival", year: 2016, genre: "Sci-Fi", rating: "94%" },
-      { title: "Parasite", year: 2019, genre: "Thriller", rating: "99%" },
-      { title: "Eternal Sunshine of the Spotless Mind", year: 2004, genre: "Romance", rating: "92%" }
-    ],
-    laugh: [
-      { title: "Superbad", year: 2007, genre: "Comedy", rating: "88%" },
-      { title: "What We Do in the Shadows", year: 2014, genre: "Mockumentary", rating: "96%" },
-      { title: "The Grand Budapest Hotel", year: 2014, genre: "Comedy", rating: "92%" }
-    ],
-    nostalgic: [
-      { title: "Back to the Future", year: 1985, genre: "Adventure", rating: "96%" },
-      { title: "Spirited Away", year: 2001, genre: "Animation", rating: "97%" },
-      { title: "Ferris Bueller's Day Off", year: 1986, genre: "Comedy", rating: "87%" }
-    ]
-  };
+.mood-btn {
+  background: #1a1a1a !important;
+  border: 2px solid #333 !important;
+  color: #f0f0f0 !important;
+  padding: 16px 10px !important;
+  border-radius: 12px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  text-align: center !important;
+  font-size: 0.95rem !important;
+  height: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
 
-  // Initialize
-  moodBtns.forEach(btn => {
-    btn.addEventListener('click', function() {
-      // Reset active states
-      moodBtns.forEach(b => b.classList.remove('active'));
-      this.classList.add('active');
-      
-      const mood = this.dataset.mood;
-      showRecommendations(mood);
-    });
-  });
+.mood-btn span {
+  font-size: 28px !important;
+  line-height: 1 !important;
+}
 
-  function showRecommendations(mood) {
-    const movies = recommendations[mood];
-    let html = `<h3 class="result-title">${getMoodTitle(mood)}</h3>
-                <div class="rec-grid">`;
-    
-    movies.forEach(movie => {
-      html += `
-        <div class="rec-item">
-          <strong>${movie.title}</strong>
-          <div>(${movie.year}) • ${movie.genre}</div>
-          <div>Rating: ${movie.rating}</div>
-        </div>`;
-    });
-    
-    html += `
-      </div>
-      <div class="watch-now">
-        <button class="watch-btn">▶️ Watch Trailer</button>
-        <button class="save-btn">❤️ Save to Watchlist</button>
-      </div>`;
+.mood-btn:hover, .mood-btn.active {
+  background: rgba(255, 75, 43, 0.15) !important;
+  border-color: #ff4b2b !important;
+  transform: translateY(-3px) !important;
+  box-shadow: 0 6px 15px rgba(255, 75, 43, 0.2) !important;
+}
 
-    resultsDiv.innerHTML = html;
-    resultsDiv.style.display = 'block';
-    
-    // Smooth scroll to results
-    resultsDiv.scrollIntoView({ 
-      behavior: 'smooth', 
-      block: 'nearest'
-    });
-    
-    // Trailer button handler
-    document.querySelector('.watch-btn')?.addEventListener('click', (e) => {
-      alert('✨ Real trailers coming soon! This is a demo.');
-    });
+.quiz-results {
+  background: rgba(24, 24, 24, 0.9) !important;
+  border: 1px solid #222 !important;
+  border-radius: 12px !important;
+  padding: 20px !important;
+  margin-top: 20px !important;
+}
+
+.result-title {
+  color: #ff4b2b !important;
+  font-size: 1.5rem !important;
+  margin-bottom: 15px !important;
+  font-weight: 700 !important;
+}
+
+.rec-item {
+  background: rgba(40, 40, 40, 0.6) !important;
+  padding: 15px !important;
+  border-radius: 10px !important;
+  border-left: 3px solid #ff4b2b !important;
+  margin-bottom: 10px !important;
+}
+
+.watch-btn {
+  background: linear-gradient(90deg, #ff416c, #ff4b2b) !important;
+  color: white !important;
+  border: none !important;
+  padding: 10px 20px !important;
+  border-radius: 30px !important;
+  font-weight: bold !important;
+  display: block !important;
+  width: 100% !important;
+  margin-top: 15px !important;
+  cursor: pointer !important;
+}
+
+/* MOBILE FIXES */
+@media (max-width: 768px) {
+  .mood-options {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)) !important;
   }
-
-  function getMoodTitle(mood) {
-    const titles = {
-      chill: "😌 Cozy Night Picks",
-      thrill: "💥 Adrenaline Rush Picks",
-      deep: "🧠 Mind-Bending Picks",
-      laugh: "😂 Instant Mood Lifters",
-      nostalgic: "📼 Throwback Gems"
-    };
-    return titles[mood] || "🎬 Your Perfect Match";
+  
+  .mood-btn {
+    padding: 12px 8px !important;
+    font-size: 0.85rem !important;
   }
-});
-
+  
+  .mood-btn span {
+    font-size: 24px !important;
+  }
+}
