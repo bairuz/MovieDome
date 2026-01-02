@@ -100,22 +100,6 @@
   </header>
 
 
-  <!--Test Mood-->
- <!-- Add this to your index.html inside .container (after banner) -->
-<section class="mood-quiz-section">
-  <div class="mood-quiz-container">
-    <h2>🎬 What's your vibe tonight?</h2>
-    <div class="mood-options">
-      <button class="mood-btn" data-mood="chill"><span>😌</span>Chill & Cozy</button>
-      <button class="mood-btn" data-mood="thrill"><span>💥</span>High Energy</button>
-      <button class="mood-btn" data-mood="deep"><span>🧠</span>Thought-Provoking</button>
-      <button class="mood-btn" data-mood="laugh"><span>😂</span>Need a Laugh</button>
-      <button class="mood-btn" data-mood="nostalgic"><span>📼</span>Nostalgic</button>
-    </div>
-    <div id="quiz-results" class="quiz-results"></div>
-  </div>
-</section>
-
   <!-- Banner -->
   <section class="banner" id="banner" aria-label="Featured content">
     <h1 id="banner-title">Watch Free Movies & TV Shows Online — No Signup Required</h1>
@@ -126,6 +110,36 @@
     <section class="row" aria-labelledby="trending-movies">
       <h2 id="trending-movies">Trending Movies</h2>
       <div class="list" id="movies-list" role="list"></div>
+
+      <!--Test Mood-->
+ <!-- Mood Match - MINIMAL VERSION -->
+<div class="row">
+  <h2>🎬 What's your vibe tonight?</h2>
+  <div class="list mood-options">
+    <button class="mood-btn" data-mood="chill">
+      <span>😌</span>
+      <div>Chill & Cozy</div>
+    </button>
+    <button class="mood-btn" data-mood="thrill">
+      <span>💥</span>
+      <div>High Energy</div>
+    </button>
+    <button class="mood-btn" data-mood="deep">
+      <span>🧠</span>
+      <div>Thought-Provoking</div>
+    </button>
+    <button class="mood-btn" data-mood="laugh">
+      <span>😂</span>
+      <div>Need a Laugh</div>
+    </button>
+    <button class="mood-btn" data-mood="nostalgic">
+      <span>📼</span>
+      <div>Nostalgic</div>
+    </button>
+  </div>
+  <div id="quiz-results" class="list quiz-results" style="display:none; grid-template-columns: 1fr;"></div>
+</div>
+      
     </section>
 
     <section class="row" aria-labelledby="trending-tv">
@@ -213,6 +227,7 @@
 
 </body>
 </html>
+
 
 
 
