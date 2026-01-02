@@ -1,12 +1,9 @@
-// Mood Match Recommender - Zero Dependencies
 document.addEventListener('DOMContentLoaded', () => {
-  const quizSection = document.getElementById('mood-quiz');
-  if (!quizSection) return; // Exit if section not present
-
   const moodBtns = document.querySelectorAll('.mood-btn');
   const resultsDiv = document.getElementById('quiz-results');
 
-  // Sample data - replace with your actual movie data later
+  if (!moodBtns.length || !resultsDiv) return;
+
   const recommendations = {
     chill: [
       { title: "Before Sunrise", year: 1995, genre: "Romance", rating: "97%" },
@@ -35,62 +32,43 @@ document.addEventListener('DOMContentLoaded', () => {
     ]
   };
 
-  // Attach event listeners
   moodBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      // Reset active states
+    btn.addEventListener('click', function() {
       moodBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
+      this.classList.add('active');
       
-      const mood = btn.dataset.mood;
+      const mood = this.dataset.mood;
       showRecommendations(mood);
     });
   });
 
   function showRecommendations(mood) {
     const movies = recommendations[mood];
-    let html = `<h3 class="result-title">${getMoodTitle(mood)}</h3>
-                <div class="rec-grid">`;
+    let html = `<h3 class="result-title">${getMoodTitle(mood)}</h3>`;
     
     movies.forEach(movie => {
       html += `
         <div class="rec-item">
-          <strong>${movie.title}</strong> (${movie.year}) • ${movie.genre} • ${movie.rating}
+          <strong>${movie.title}</strong><br>
+          (${movie.year}) • ${movie.genre}<br>
+          Rating: ${movie.rating}
         </div>`;
     });
     
-    html += `
-      </div>
-      <div class="watch-now">
-        <button class="watch-btn" data-trailer="${mood}-trailer">▶️ Watch Trailer</button>
-        <button class="save-btn">❤️ Save to Watchlist</button>
-      </div>`;
-
+    html += `<button class="watch-btn">▶️ Watch Trailer</button>`;
+    
     resultsDiv.innerHTML = html;
-    resultsDiv.style.display = 'block';
-    
-    // Smooth scroll to results
-    resultsDiv.scrollIntoView({ 
-      behavior: 'smooth', 
-      block: 'nearest',
-      inline: 'nearest'
-    });
-    
-    // Trailer button handler
-    document.querySelector('.watch-btn')?.addEventListener('click', (e) => {
-      const trailerKey = e.currentTarget.dataset.trailer;
-      alert(`✨ Pro tip: Connect this to YouTube API later!\nExample trailer key: ${trailerKey}`);
-    });
+    resultsDiv.style.display = 'grid';
+    resultsDiv.scrollIntoView({behavior: 'smooth'});
   }
 
   function getMoodTitle(mood) {
-    const titles = {
+    return {
       chill: "😌 Cozy Night Picks",
       thrill: "💥 Adrenaline Rush Picks",
       deep: "🧠 Mind-Bending Picks",
       laugh: "😂 Instant Mood Lifters",
       nostalgic: "📼 Throwback Gems"
-    };
-    return titles[mood] || "🎬 Your Perfect Match";
+    }[mood];
   }
 });
