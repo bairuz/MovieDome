@@ -464,6 +464,118 @@ body {
 
 
 
+/*Test*/
+/* ===== MOOD MATCH RECOMMENDER - DARK THEME OPTIMIZED ===== */
+.mood-quiz-container {
+  background: #12121c;
+  border-radius: 20px;
+  padding: 2.5rem;
+  margin: 2rem auto;
+  max-width: 1200px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  border: 1px solid #2d2d44;
+  transition: transform 0.3s ease;
+}
+.mood-quiz-container:hover {
+  transform: translateY(-3px);
+}
+.mood-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 1.25rem;
+  margin: 1.875rem 0;
+}
+.mood-btn {
+  background: #1e1e32;
+  border: 2px solid #3a3a5c;
+  color: #fff;
+  padding: 1.125rem 0.875rem;
+  border-radius: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  font-size: 0.9375rem;
+  backdrop-filter: blur(4px);
+}
+.mood-btn:hover, .mood-btn.active {
+  background: #6a5af9;
+  border-color: #8a7bff;
+  transform: translateY(-2px);
+  color: white;
+}
+.mood-btn span {
+  font-size: 1.875rem;
+  display: block;
+  line-height: 1;
+}
+.quiz-results {
+  margin-top: 1.5rem;
+  padding: 1.25rem;
+  background: rgba(30, 30, 50, 0.7);
+  border-radius: 16px;
+  min-height: 100px;
+  display: none;
+  animation: fadeIn 0.4s ease;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.rec-grid {
+  display: grid;
+  gap: 0.875rem;
+  margin: 1.25rem 0;
+}
+.rec-item {
+  padding: 0.875rem;
+  background: rgba(40, 40, 70, 0.6);
+  border-radius: 12px;
+  border-left: 3px solid #6a5af9;
+  font-size: 0.9375rem;
+}
+.watch-now {
+  display: flex;
+  gap: 0.875rem;
+  margin-top: 1.25rem;
+}
+.watch-btn, .save-btn {
+  flex: 1;
+  padding: 0.875rem;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.watch-btn:hover, .save-btn:hover {
+  opacity: 0.9;
+}
+.watch-btn {
+  background: linear-gradient(135deg, #ff4d4d, #ff1a8c);
+  color: white;
+}
+.save-btn {
+  background: transparent;
+  border: 1.5px solid #6a5af9;
+  color: #6a5af9;
+}
 
-
-
+/* Mobile optimization */
+@media (max-width: 768px) {
+  .mood-quiz-container {
+    padding: 1.5rem;
+    margin: 1rem;
+  }
+  .mood-options {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 0.75rem;
+  }
+  .mood-btn {
+    padding: 0.875rem 0.5rem;
+    font-size: 0.8125rem;
+  }
+  .mood-btn span {
+    font-size: 1.5rem;
+  }
+}
