@@ -465,100 +465,227 @@ body {
 
 
 /*Test*/
-/* ===== MOOD MATCH RECOMMENDER - DARK THEME OPTIMIZED ===== */
+/* ===== MOOD MATCH RECOMMENDER - MATCHES moviedome.site EXACTLY ===== */
 .mood-quiz-container {
-  background: #12121c;
-  border-radius: 20px;
-  padding: 2.5rem;
+  background: rgba(12, 11, 26, 0.75); /* Matches your site's #0c0b1a base */
+  backdrop-filter: blur(12px); /* Your site's glass-morphism effect */
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 24px;
+  padding: 2.25rem;
   margin: 2rem auto;
   max-width: 1200px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-  border: 1px solid #2d2d44;
-  transition: transform 0.3s ease;
+  border: 1px solid rgba(106, 90, 249, 0.15); /* Matches your gradient border opacity */
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    inset 0 0 15px rgba(255, 255, 255, 0.05);
+  position: relative;
+  overflow: hidden;
 }
-.mood-quiz-container:hover {
-  transform: translateY(-3px);
+
+/* Gradient border overlay - matches your card borders */
+.mood-quiz-container::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  background: linear-gradient(45deg, 
+    rgba(106, 90, 249, 0.3), 
+    rgba(255, 105, 180, 0.25), 
+    rgba(106, 90, 249, 0.2)
+  );
+  z-index: 0;
+  border-radius: 24px;
+  opacity: 0.7;
+  filter: blur(1px);
 }
+
+.mood-quiz-container > * {
+  position: relative;
+  z-index: 1;
+}
+
 .mood-options {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 1.25rem;
-  margin: 1.875rem 0;
+  grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
+  gap: 1.125rem;
+  margin: 1.75rem 0;
 }
+
 .mood-btn {
-  background: #1e1e32;
-  border: 2px solid #3a3a5c;
-  color: #fff;
-  padding: 1.125rem 0.875rem;
-  border-radius: 16px;
+  background: rgba(30, 28, 51, 0.65); /* Matches your movie cards */
+  border: 1px solid rgba(106, 90, 249, 0.25);
+  color: #e0e0ff;
+  padding: 1.125rem 0.75rem;
+  border-radius: 18px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.35s cubic-bezier(0.23, 1, 0.32, 1);
   text-align: center;
-  font-size: 0.9375rem;
-  backdrop-filter: blur(4px);
+  font-size: 0.925rem;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  position: relative;
+  overflow: hidden;
 }
-.mood-btn:hover, .mood-btn.active {
-  background: #6a5af9;
-  border-color: #8a7bff;
-  transform: translateY(-2px);
-  color: white;
+
+.mood-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, 
+    rgba(106, 90, 249, 0.15), 
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 0;
 }
+
 .mood-btn span {
   font-size: 1.875rem;
   display: block;
   line-height: 1;
+  margin-bottom: 0.375rem;
+  text-shadow: 0 0 8px rgba(165, 142, 255, 0.4);
 }
+
+.mood-btn:hover, .mood-btn.active {
+  transform: translateY(-3px);
+  border-color: rgba(106, 90, 249, 0.6);
+  background: rgba(40, 37, 70, 0.8);
+  color: #ffffff;
+}
+
+.mood-btn:hover::after, .mood-btn.active::after {
+  opacity: 1;
+}
+
 .quiz-results {
-  margin-top: 1.5rem;
-  padding: 1.25rem;
-  background: rgba(30, 30, 50, 0.7);
-  border-radius: 16px;
-  min-height: 100px;
+  margin-top: 1.625rem;
+  padding: 1.5rem;
+  background: rgba(20, 19, 38, 0.6);
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(106, 90, 249, 0.2);
   display: none;
-  animation: fadeIn 0.4s ease;
+  animation: fadeInResult 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+
+@keyframes fadeInResult {
+  from { 
+    opacity: 0; 
+    transform: translateY(15px) scale(0.98);
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0) scale(1);
+  }
 }
+
+.result-title {
+  font-size: 1.5rem;
+  background: linear-gradient(90deg, #a58eff, #ff79c6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1.25rem;
+  text-shadow: 0 2px 10px rgba(165, 142, 255, 0.2);
+}
+
 .rec-grid {
   display: grid;
   gap: 0.875rem;
-  margin: 1.25rem 0;
+  margin: 1rem 0;
 }
+
 .rec-item {
-  padding: 0.875rem;
-  background: rgba(40, 40, 70, 0.6);
-  border-radius: 12px;
+  padding: 1rem;
+  background: rgba(30, 28, 51, 0.55);
+  border-radius: 16px;
   border-left: 3px solid #6a5af9;
   font-size: 0.9375rem;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
+
+.rec-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    rgba(106, 90, 249, 0.1), 
+    transparent 80%
+  );
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.rec-item:hover::before {
+  opacity: 1;
+}
+
+.rec-item:hover {
+  transform: translateX(5px);
+  border-left-color: #ff79c6;
+}
+
 .watch-now {
   display: flex;
-  gap: 0.875rem;
-  margin-top: 1.25rem;
+  gap: 1rem;
+  margin-top: 1.5rem;
 }
+
 .watch-btn, .save-btn {
   flex: 1;
-  padding: 0.875rem;
+  padding: 0.9375rem;
   border: none;
-  border-radius: 12px;
+  border-radius: 14px;
   font-weight: 700;
   cursor: pointer;
-  transition: opacity 0.2s;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+  font-size: 0.95rem;
 }
-.watch-btn:hover, .save-btn:hover {
-  opacity: 0.9;
-}
+
 .watch-btn {
-  background: linear-gradient(135deg, #ff4d4d, #ff1a8c);
+  background: linear-gradient(135deg, #ff4d8d, #ff79c6);
   color: white;
+  box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
 }
+
+.watch-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 105, 180, 0.6);
+  letter-spacing: 0.5px;
+}
+
 .save-btn {
-  background: transparent;
-  border: 1.5px solid #6a5af9;
-  color: #6a5af9;
+  background: rgba(30, 28, 51, 0.7);
+  border: 1.5px solid rgba(106, 90, 249, 0.5);
+  color: #a58eff;
+  backdrop-filter: blur(5px);
+}
+
+.save-btn:hover {
+  background: rgba(45, 42, 78, 0.8);
+  border-color: #a58eff;
+  transform: translateY(-2px);
+}
+
+/* Glowing pulse animation for active state */
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(106, 90, 249, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(106, 90, 249, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(106, 90, 249, 0); }
+}
+
+.mood-btn.active {
+  animation: pulse 1.5s infinite;
 }
 
 /* Mobile optimization */
@@ -566,16 +693,26 @@ body {
   .mood-quiz-container {
     padding: 1.5rem;
     margin: 1rem;
+    border-radius: 20px;
   }
+  
   .mood-options {
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-    gap: 0.75rem;
+    grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
+    gap: 0.875rem;
   }
+  
   .mood-btn {
     padding: 0.875rem 0.5rem;
-    font-size: 0.8125rem;
+    font-size: 0.85rem;
+    border-radius: 16px;
   }
+  
   .mood-btn span {
     font-size: 1.5rem;
+    margin-bottom: 0.25rem;
+  }
+  
+  .result-title {
+    font-size: 1.35rem;
   }
 }
