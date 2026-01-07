@@ -460,7 +460,62 @@ body {
 /* FIXED: Added missing closing brace for the last media query */
 
 
+/* Css for About, Contacg, Disclaimer, and sitemap*/
 
 
+
+
+
+```css
+/* About, Disclaimer, Contact, and Sitemap Section Styles */
+.section {
+background: #1a1a1a; /* Dark background for the sections */
+border-radius: 10px; /* Rounded corners to match your theme */
+box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Subtle shadow for depth */
+padding: 20px;
+margin: 30px 0;
+}
+
+/* Section Headings */
+.section h2 {
+font-size: 1.8rem;
+color: #ff4b2b; /* Use the same color for headings */
+margin-bottom: 15px;
+text-align: center; /* Center align the headings */
+}
+
+/* Paragraphs */
+.section p {
+color: #ccc; /* Lighter gray for better readability */
+margin-bottom: 15px;
+line-height: 1.7; /* Increased line-height for readability */
+}
+
+/* Links in Sections */
+.section a {
+color: #ff4b2b; /* Link color */
+text-decoration: underline; /* Underline links */
+transition: color 0.3s;
+}
+
+.section a:hover {
+color: #ff8c7a; /* Change link color on hover */
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+.section {
+padding: 15px; /* Adjust padding on smaller screens */
+}
+
+.section h2 {
+font-size: 1.6rem; /* Adjust heading size for smaller screens */
+}
+
+.section p {
+font-size: 0.95rem; /* Adjust paragraph size for smaller screens */
+}
+}
+```
 
 
